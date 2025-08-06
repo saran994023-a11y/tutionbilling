@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Payment Status</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 400px;
+            max-width: 90%;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 10px;
+        }
+
+        label {
+            font-weight: bold;
+            color: #333;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="number"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin: 10px 0 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #newTotalFees, #remainingBalance, #totalPaymentMade {
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+    <script>
+        function calculateFees() {
+            const totalFeesPerMonth = parseFloat(document.getElementById('feesPerMonth').textContent);
+            const months = parseInt(document.getElementById('months').value || '0', 10);
+            const amountPaid = parseFloat(document.getElementById('amount').value || '0');
+
+            // Calculate the new total fees based on selected months
+            const newTotalFees = totalFeesPerMonth * months;
+
+            // Update the displayed new total fees and selected months
+            document.getElementById('newTotalFees').textContent = `Rs.${newTotalFees.toFixed(2)}`;
+            document.getElementById('selectedMonths').textContent = `${months} month(s)`;
+
+            // Calculate and display the outstanding balance and total payment made
+            const remainingBalance = newTotalFees - amountPaid;
+            document.getElementById('remainingBalance').textContent = `Rs.${Math.max(0, remainingBalance).toFixed(2)}`;
+            document.getElementById('totalPaymentMade').textContent = `Rs.${amountPaid.toFixed(2)}`;
+        }
+
+        function handleFormSubmit(event) {
+            // Prevent form from submitting and reloading the page
+            event.preventDefault();
+
+            // Perform calculation
+            calculateFees();
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Student Payment Status</h1>
+        <p>Total Fees (per month): Rs:<span id="feesPerMonth">{{ total_fees }}</span></p>
+        <p>New Total Fees for <span id="selectedMonths">0 month(s)</span>: <span id="newTotalFees">Rs.0.00</span></p>
+
+        <form method="post" action="{% url 'student_payment_status' student.id %}">
+            {% csrf_token %}
+            <label for="months">Select Number of Months:</label>
+            <input type="number" id="months" name="months" value="0" min="0" onchange="calculateFees()">
+            
+            <label for="amount">Enter Amount Paid:</label>
+            <input type="number" id="amount" name="amount" value="0" min="0" onchange="calculateFees()">
+            
+            <button type="submit" name="submit_payment">Submit Payment</button>
+        </form>
+
+        <p>Outstanding Balance: Rs:<span id="remainingBalance">0.00</span></p>
+        <p>Total Payment Made: Rs:<span id="totalPaymentMade">0.00</span></p>
+    </div>
+</body>
+</html>

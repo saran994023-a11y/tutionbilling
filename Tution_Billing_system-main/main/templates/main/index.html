@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Landing Page</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #4CAF50 40%, #388E3C 100%);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #fff;
+        }
+
+        .container {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+            width: 350px;
+            text-align: center;
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            left: -50px;
+            width: 150%;
+            height: 150%;
+            background: linear-gradient(120deg, rgba(76, 175, 80, 0.1), rgba(0, 0, 0, 0.05));
+            z-index: 1;
+            transition: opacity 0.4s ease;
+            border-radius: 50%;
+        }
+
+        .card:hover::before {
+            opacity: 0;
+        }
+
+        .card:hover {
+            transform: translateY(-15px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .card img {
+            max-width: 80%;
+            height: auto;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            transition: transform 0.4s ease;
+        }
+
+        .card:hover img {
+            transform: scale(1.05);
+        }
+
+        .card h2 {
+            margin: 0 0 15px;
+            font-size: 1.8em;
+            color: #333;
+            z-index: 2;
+        }
+
+        .card p {
+            margin: 0 0 20px;
+            color: #666;
+            font-size: 1.1em;
+            line-height: 1.6;
+            z-index: 2;
+        }
+
+        .card a {
+            display: inline-block;
+            padding: 12px 18px;
+            color: #fff;
+            text-decoration: none;
+            background: #4CAF50;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: bold;
+            z-index: 2;
+            position: relative;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card a:hover {
+            background-color: #388E3C;
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.5);
+        }
+
+        @media (max-width: 768px) {
+            .card {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    {% load static %}
+    <div class="container">
+        <div class="card">
+            <img src="{% static 'main/images/admin.jfif' %}" alt="Admin Image">
+            <h2>Master Admin</h2>
+            <p>Manage the entire system, oversee all operations, and ensure everything runs smoothly. Click below to access the admin dashboard.</p>
+            <a href="{% url 'admin:index' %}">Go to Admin Panel</a>
+        </div>
+        <div class="card">
+            <img src="{% static 'main/images/tutor.jfif' %}" alt="Branch Admin Image">
+            <h2>Branch Admin</h2>
+            <p>Manage your branch's details, monitor activities, and handle your specific tasks. Click below to access the branch admin dashboard.</p>
+            <a href="{% url 'branch_login' %}">Login as Branch Admin</a>
+        </div>
+    </div>
+</body>
+</html>

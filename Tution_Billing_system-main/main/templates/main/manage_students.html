@@ -1,0 +1,512 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Students</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e8f5e9;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2e7d32;
+            margin-bottom: 20px;
+            font-size: 32px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            overflow-x: auto;
+        }
+
+        form {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        input[type="text"], select {
+            padding: 10px;
+            width: 300px;
+            border-radius: 25px;
+            border: 1px solid #a5d6a7;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus, select:focus {
+            border-color: #4CAF50;
+            outline: none;
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+        }
+
+        button[type="submit"] {
+            background: linear-gradient(135deg, #388e3c, #4CAF50);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        button[type="submit"]:hover {
+            background: linear-gradient(135deg, #4CAF50, #388e3c);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        table th, table td {
+            padding: 12px 15px;
+            text-align: left;
+            color: #333;
+        }
+
+        table th {
+            background-color: #4CAF50;
+            color: #ffffff;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #e8f5e9;
+        }
+
+        table tr:hover {
+            background-color: #c8e6c9;
+            transition: background-color 0.3s ease;
+        }
+        button, a {
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    text-align: center;
+}
+
+.action-button {
+    background: linear-gradient(135deg, #388e3c, #4CAF50);
+    color: white;
+    padding: 10px 15px;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: bold;
+    text-decoration: none; /* Ensures no underlining for links */
+}
+
+.action-button:hover {
+    background: linear-gradient(135deg, #4CAF50, #388e3c);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.action a {
+    color: white; /* Ensure links inherit the button style */
+}
+
+.payment a {
+    color: white; /* Ensure links inherit the button style */
+}
+
+.add-student {
+    margin: 10px 0;
+    display: inline-block;
+}
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Manage Students</h1>
+        <form method="GET" action="{% url 'manage_students' %}">
+            <input type="text" name="search" value="{{ search_term }}" placeholder="Search students...">
+            <select id="paid_status_filter">
+                <option value="">Filter by Paid Status</option>
+                <option value="paid">Paid</option>
+                <option value="unpaid">Unpaid</option>
+            </select>
+            <select id="advance_payment_filter">
+                <option value="">Filter by Advance Payment (Months)</option>
+                <option value="0">0</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3 and above</option>
+            </select>
+            <button type="submit">Search</button>
+        </form>
+        
+        <p>Total Students: {{ students.count }}</p>
+        <a href="{% url 'add_student' %}" class="add-student action-button">Add Student</a>
+        <table>
+            <thead>
+                <tr>
+                    <th>Reg_ID</th>
+                    <th>Name</th>
+                    <th>Parent Name</th>
+                    <th>Phone Number</th>
+                    <th>Address</th>
+                    <th>Subjects</th>
+                    <th>Total Fees</th>
+                    <th>Advance Payment (Months)</th>
+                    <th>Paid Status</th>
+                    <th>Actions</th>
+                    <th>Make Payment</th>
+                </tr>
+            </thead>
+            <tbody id="studentTableBody">
+                {% for student in students %}
+                <tr>
+                    <td class="row-number"></td>
+                    <td>{{ student.name }}</td>
+                    <td>{{ student.parent_name }}</td>
+                    <td>{{ student.phone_number1 }}</td>
+                    <td>{{ student.address }}</td>
+                    <td>
+                        {% for subject in student.subjects.all %}
+                            {{ subject.name }}{% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                    </td>
+                    <td>₹{{ student.total_fees }}</td>
+                    <td>{{ student.advance_payment_months }}</td>
+                    <td>{{ student.calculate_paid_status }}</td>
+                    <td class="action">
+                        <a href="{% url 'delete_student' student.id %}" class="action-button">Delete</a>
+                        <button type="submit" name="generate_bill" formaction="{% url 'generate_student_bill' student.id %}" class="action-button">
+                            Generate Bill
+                        </button>                    
+                    </td>
+                    <td class="payment">
+                        <a href="{% url 'student_payment_status' student.id %}" class="action-button">Payment</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const rows = document.querySelectorAll("#studentTableBody tr");
+            const searchInput = document.querySelector("input[name='search']");
+            const paidStatusFilter = document.getElementById("paid_status_filter");
+            const advancePaymentFilter = document.getElementById("advance_payment_filter");
+            const branchName = "{{ branch.name }}"; // Dynamically fetched branch name
+    
+            // Assign unique Reg_IDs based on the branch name
+            rows.forEach((row, index) => {
+                const rowNumberCell = row.querySelector(".row-number");
+                rowNumberCell.textContent = `${branchName}_${index + 1}`; // Generate Reg_ID
+            });
+    
+            // Filtering logic
+            function filterRows() {
+                const searchTerm = searchInput.value.toLowerCase();
+                const paidStatusValue = paidStatusFilter.value.toLowerCase();
+                const advancePaymentValue = advancePaymentFilter.value;
+    
+                rows.forEach(row => {
+                    const rowContent = Array.from(row.querySelectorAll("td")).map(td => td.textContent.toLowerCase()).join(" ");
+                    const paidStatus = row.querySelector("td:nth-child(9)").textContent.toLowerCase().trim(); // Paid Status column
+                    const advancePayment = parseInt(row.querySelector("td:nth-child(8)").textContent, 10); // Advance Payment column
+    
+                    const matchesSearch = rowContent.includes(searchTerm);
+                    const matchesPaidStatus = !paidStatusValue || paidStatus === paidStatusValue; // Match exact "paid" or "unpaid"
+                    const matchesAdvancePayment =
+                        !advancePaymentValue ||
+                        (advancePaymentValue === "3" && advancePayment >= 3) ||
+                        (advancePaymentValue === `${advancePayment}`);
+    
+                    // Show or hide the row based on filter criteria
+                    if (matchesSearch && matchesPaidStatus && matchesAdvancePayment) {
+                        row.style.display = "";
+                    } else {
+                        row.style.display = "none";
+                    }
+                });
+            }
+    
+            // Attach event listeners to filters and search input
+            searchInput.addEventListener("input", filterRows);
+            paidStatusFilter.addEventListener("change", filterRows);
+            advancePaymentFilter.addEventListener("change", filterRows);
+        });
+    </script>
+    
+    
+    </body>
+</html> -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Students</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e8f5e9;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2e7d32;
+            margin-bottom: 20px;
+            font-size: 32px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            overflow-x: auto;
+        }
+
+        form {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        input[type="text"], select {
+            padding: 10px;
+            width: 300px;
+            border-radius: 25px;
+            border: 1px solid #a5d6a7;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus, select:focus {
+            border-color: #4CAF50;
+            outline: none;
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+        }
+
+        button[type="submit"] {
+            background: linear-gradient(135deg, #388e3c, #4CAF50);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        button[type="submit"]:hover {
+            background: linear-gradient(135deg, #4CAF50, #388e3c);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        table th, table td {
+            padding: 12px 15px;
+            text-align: left;
+            color: #333;
+        }
+
+        table th {
+            background-color: #4CAF50;
+            color: #ffffff;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #e8f5e9;
+        }
+
+        table tr:hover {
+            background-color: #c8e6c9;
+            transition: background-color 0.3s ease;
+        }
+
+        button, a {
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .action-button {
+            background: linear-gradient(135deg, #388e3c, #4CAF50);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            text-decoration: none; /* Ensures no underlining for links */
+        }
+
+        .action-button:hover {
+            background: linear-gradient(135deg, #4CAF50, #388e3c);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .add-student {
+            margin: 10px 0;
+            display: inline-block;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Manage Students</h1>
+        <form method="GET" action="{% url 'manage_students' %}">
+            <input type="text" name="search" value="{{ search_term }}" placeholder="Search students...">
+            <select id="paid_status_filter">
+                <option value="">Filter by Paid Status</option>
+                <option value="paid">Paid</option>
+                <option value="unpaid">Unpaid</option>
+            </select>
+            <select id="advance_payment_filter">
+                <option value="">Filter by Advance Payment (Months)</option>
+                <option value="0">0</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3 and above</option>
+            </select>
+            <button type="submit">Search</button>
+        </form>
+        
+        <p>Total Students: {{ students.count }}</p>
+        <a href="{% url 'add_student' %}" class="add-student action-button">Add Student</a>
+        <table>
+            <thead>
+                <tr>
+                    <th>Reg_ID</th>
+                    <th>Name</th>
+                    <th>Parent Name</th>
+                    <th>Phone Number</th>
+                    <th>Address</th>
+                    <th>Subjects</th>
+                    <th>Total Fees</th>
+                    <th>Advance Payment (Months)</th>
+                    <th>Paid Status</th>
+                    <th>Actions</th>
+                    <th>Make Payment</th>
+                    <th>Generate Bill</th> <!-- New Column -->
+                </tr>
+            </thead>
+            <tbody id="studentTableBody">
+                {% for student in students %}
+                <tr>
+                    <td>{{student.reg_id}}</td>
+                    <td>{{ student.name }}</td>
+                    <td>{{ student.parent_name }}</td>
+                    <td>{{ student.phone_number1 }}</td>
+                    <td>{{ student.address }}</td>
+                    <td>
+                        {% for subject in student.subjects.all %}
+                            {{ subject.name }}{% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                    </td>
+                    <td>₹{{ student.total_fees }}</td>
+                    <td>{{ student.advance_payment_months }}</td>
+                    <td>{{ student.calculate_paid_status }}</td>
+                    <td class="action">
+                        <a href="{% url 'delete_student' student.id %}" class="action-button">Delete</a>
+                    </td>
+                    <td class="payment">
+                        <a href="{% url 'student_payment_status' student.id %}" class="action-button">Payment</a>
+                    </td>
+                    <td class="generate-bill">
+                        <form method="post" action="{% url 'generate_student_bill' student.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="action-button">Generate Bill</button>
+                        </form>
+                    </td>
+                    
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const rows = document.querySelectorAll("#studentTableBody tr");
+            const searchInput = document.querySelector("input[name='search']");
+            const paidStatusFilter = document.getElementById("paid_status_filter");
+            const advancePaymentFilter = document.getElementById("advance_payment_filter");
+    
+            // Filtering logic
+            function filterRows() {
+                const searchTerm = searchInput.value.toLowerCase();
+                const paidStatusValue = paidStatusFilter.value.toLowerCase();
+                const advancePaymentValue = advancePaymentFilter.value;
+    
+                rows.forEach(row => {
+                    const rowContent = Array.from(row.querySelectorAll("td")).map(td => td.textContent.toLowerCase()).join(" ");
+                    const paidStatus = row.querySelector("td:nth-child(9)").textContent.toLowerCase().trim(); // Paid Status column
+                    const advancePayment = parseInt(row.querySelector("td:nth-child(8)").textContent, 10); // Advance Payment column
+    
+                    const matchesSearch = rowContent.includes(searchTerm);
+                    const matchesPaidStatus = !paidStatusValue || paidStatus === paidStatusValue; // Match exact "paid" or "unpaid"
+                    const matchesAdvancePayment =
+                        !advancePaymentValue ||
+                        (advancePaymentValue === "3" && advancePayment >= 3) ||
+                        (advancePaymentValue === `${advancePayment}`);
+    
+                    // Show or hide the row based on filter criteria
+                    if (matchesSearch && matchesPaidStatus && matchesAdvancePayment) {
+                        row.style.display = "";
+                    } else {
+                        row.style.display = "none";
+                    }
+                });
+            }
+    
+            // Attach event listeners to filters and search input
+            searchInput.addEventListener("input", filterRows);
+            paidStatusFilter.addEventListener("change", filterRows);
+            advancePaymentFilter.addEventListener("change", filterRows);
+        });
+    </script>
+</body>
+</html>
+

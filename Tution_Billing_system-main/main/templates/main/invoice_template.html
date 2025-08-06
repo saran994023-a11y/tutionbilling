@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f6f9;
+            color: #333;
+        }
+
+        .container {
+            width: 80%;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .invoice-header {
+            text-align: center;
+            color: #2c3e50;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .invoice-header h1 {
+            font-size: 32px;
+            margin: 0;
+        }
+
+        .invoice-header p {
+            font-size: 18px;
+            margin: 5px 0;
+            color: #666;
+        }
+
+        .invoice-details, .invoice-summary {
+            margin-bottom: 20px;
+            padding: 10px 0;
+        }
+
+        .invoice-details p, .invoice-summary p {
+            margin: 8px 0;
+            font-size: 16px;
+            color: #555;
+        }
+
+        .invoice-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .invoice-table th, .invoice-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+            font-size: 16px;
+        }
+
+        .invoice-table th {
+            background-color: #4CAF50;
+            color: white;
+            font-weight: bold;
+        }
+
+        .invoice-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .invoice-table tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .total-row {
+            background-color: #4CAF50;
+            color: white;
+            font-weight: bold;
+        }
+
+        .total-row td {
+            font-size: 18px;
+        }
+
+        .highlight {
+            color: #e53935;
+            font-weight: bold;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            font-size: 16px;
+            border-top: 1px solid #ddd;
+        }
+        
+        .summary-item:last-child {
+            font-weight: bold;
+            font-size: 18px;
+            color: #4CAF50;
+        }
+    </style>
+    <title>Invoice</title>
+</head>
+<body>
+    <div class="container">
+        <div class="invoice-header">
+            <h1>Invoice</h1>
+            <p>Invoice Number: {{ invoice_number }}</p>
+            <p>Date: {{ date_time }}</p>
+        </div>
+
+        <div class="invoice-details">
+            <p><strong>Registration ID:</strong> {{ reg_id }}</p>
+            <p><strong>Student Name:</strong> {{ student_name }}</p>
+            <p><strong>Parent Name:</strong> {{ parent_name }}</p>
+            <p><strong>Phone Number:</strong> {{ phone_number }}</p>
+            <p><strong>Address:</strong> {{ address }}</p>
+            <p><strong>Number of Months:</strong> {{ months }}</p>
+        </div>
+
+        <h3 style="color: #4CAF50; border-bottom: 2px solid #4CAF50; padding-bottom: 5px;">Subject Fees</h3>
+        <table class="invoice-table">
+            <thead>
+                <tr>
+                    <th>Subject</th>
+                    <th>Fee (INR)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for subject in subjects %}
+                <tr>
+                    <td>{{ subject.name }}</td>
+                    <td>Rs:{{ subject.fee }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="invoice-summary">
+            <div class="summary-item">
+                <span>Total Fees</span>
+                <span>Rs:{{ total_fees }}</span>
+            </div>
+            <div class="summary-item">
+                <span>Outstanding Balance</span>
+                <span class="highlight">Rs:{{ remaining_balance }}</span>
+            </div>
+            <!-- <div class="summary-item">
+                <span>Total Payment Made</span>
+                <span> {{ total_payment_made }}</span>
+            </div> -->
+        </div>
+    </div>
+</body>
+</html>

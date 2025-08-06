@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Branch Home</title>
+    <style>
+        /* Global styling */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f4f8;
+            margin: 0;
+            padding: 40px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+
+        /* Container for the cards */
+        .card-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px; /* Space between cards */
+            flex-wrap: wrap; /* Allows cards to wrap on smaller screens */
+            margin-top: 20px;
+        }
+
+        /* Card styling */
+        .card {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 250px;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: translateY(-5px); /* Lifts the card */
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Makes shadow more prominent */
+        }
+
+        .card a {
+            display: inline-block;
+            text-decoration: none;
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 5px;
+            font-size: 18px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        .card a:hover {
+            background-color: #45a049;
+        }
+
+        .card h3 {
+            font-size: 22px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        /* Image inside the card */
+        .card img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+    </style>
+</head>
+<body>
+    {% load static %}
+    <h1>Welcome {{ branch.name }}</h1>
+
+    <!-- Card container for the interactive buttons -->
+    <div class="card-container">
+        <!-- Card 1 - Manage Students -->
+        <div class="card">
+            <img src="{% static 'main/images/student.jpg' %}" alt="Manage Students Image">
+            <h3>Manage Students</h3>
+            <a href="{% url 'manage_students' %}">Go to Students</a>
+        </div>
+
+        <!-- Card 2 - Manage Invoice -->
+        <div class="card">
+            <img src="{% static 'main/images/payment.avif' %}" alt="Manage Invoice Image">
+            <h3>Manage Invoice</h3>
+            <a href="{% url 'manage_invoice' %}">Go to Invoice</a>
+        </div>
+    </div>
+</body>
+</html>

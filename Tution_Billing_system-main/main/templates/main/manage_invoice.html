@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Invoices</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e8f5e9;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2e7d32;
+            margin-bottom: 20px;
+            font-size: 32px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        form {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            align-items: center;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            width: 300px;
+            margin-right: 10px;
+            border-radius: 25px;
+            border: 1px solid #a5d6a7;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            border-color: #4CAF50;
+            outline: none;
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+        }
+
+        button {
+            background: linear-gradient(135deg, #388e3c, #4CAF50);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 14px;
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, #4CAF50, #388e3c);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        p {
+            font-size: 18px;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #388e3c;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        table th, table td {
+            padding: 12px 15px;
+            text-align: left;
+            color: #333;
+        }
+
+        table th {
+            background-color: #4CAF50;
+            color: #ffffff;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #e8f5e9;
+        }
+
+        table tr:hover {
+            background-color: #c8e6c9;
+            transition: background-color 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            form {
+                flex-direction: column;
+            }
+
+            input[type="text"] {
+                width: 100%;
+                margin: 0 0 10px 0;
+            }
+
+            table th, table td {
+                padding: 10px;
+            }
+
+            button {
+                width: 100%;
+            }
+        }
+
+        .pagination-buttons {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .pagination-buttons a {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 0 10px;
+            color: #ffffff;
+            background-color: #4CAF50;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .pagination-buttons a:hover {
+            background-color: #388e3c;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .pagination-buttons a:disabled {
+            background-color: #c8e6c9;
+            color: #999;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Manage Invoices</h1>
+
+        <!-- Search Form -->
+        <form id="searchForm">
+            <input type="text" id="searchInput" placeholder="Search by student name, phone, or invoice number...">
+            <button type="submit">Search</button>
+        </form>
+
+        <!-- Invoice Table -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Reg ID</th> <!-- Added column for Registration ID -->
+                    <th>Invoice Number</th>
+                    <th>Student Name</th>
+                    <th>Parent Name</th>
+                    <th>Phone Number</th>
+                    <th>Total Fees</th>
+                    <th>Remaining Balance</th>
+                    <th>Date Created</th>
+                </tr>
+            </thead>
+            <tbody id="invoiceTableBody">
+                {% for invoice in invoices %}
+                <tr>
+                    <td>{{ invoice.student.reg_id }}</td> <!-- Display the Registration ID -->
+                    <td>{{ invoice.invoice_number }}</td>
+                    <td>{{ invoice.student.name }}</td>
+                    <td>{{ invoice.student.parent_name }}</td>
+                    <td>{{ invoice.student.phone_number1 }}</td>
+                    <td>₹{{ invoice.total_fees }}</td>
+                    <td>₹{{ invoice.remaining_balance }}</td>
+                    <td>{{ invoice.date_created|date:"Y-m-d H:i" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+
+        <!-- Pagination (if needed) -->
+        <div class="pagination-buttons">
+            {% if invoices.has_previous %}
+                <a href="?page={{ invoices.previous_page_number }}">Previous</a>
+            {% endif %}
+
+            {% if invoices.has_next %}
+                <a href="?page={{ invoices.next_page_number }}">Next</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        // JavaScript to handle searching within the invoice table
+        document.addEventListener("DOMContentLoaded", function() {
+            const searchInput = document.getElementById("searchInput");
+            const tableBody = document.getElementById("invoiceTableBody");
+            const rows = tableBody.querySelectorAll("tr");
+
+            // Function to filter table rows based on the search input
+            searchInput.addEventListener("input", function() {
+                const searchTerm = searchInput.value.toLowerCase();
+
+                rows.forEach(row => {
+                    const cells = row.querySelectorAll("td");
+                    const invoiceNumber = cells[0].textContent.toLowerCase();
+                    const studentName = cells[1].textContent.toLowerCase();
+                    const parentName = cells[2].textContent.toLowerCase();
+                    const phoneNumber = cells[3].textContent.toLowerCase();
+                    const totalFees = cells[4].textContent.toLowerCase().replace('₹', '').trim();
+                    const remainingBalance = cells[5].textContent.toLowerCase().replace('₹', '').trim();
+                    const dateCreated = cells[6].textContent.toLowerCase();
+
+                    if (
+                        invoiceNumber.includes(searchTerm) ||
+                        studentName.includes(searchTerm) ||
+                        parentName.includes(searchTerm) ||
+                        phoneNumber.includes(searchTerm) ||
+                        totalFees.includes(searchTerm) ||
+                        remainingBalance.includes(searchTerm) ||
+                        dateCreated.includes(searchTerm)
+                    ) {
+                        row.style.display = ""; // Show the row
+                    } else {
+                        row.style.display = "none"; // Hide the row
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

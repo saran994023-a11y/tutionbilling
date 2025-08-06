@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Student</title>
+    <style>
+        /* Global styling */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e8f5e9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        h1 {
+            font-size: 28px;
+            color: #2e7d32;
+            text-align: center;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        /* Form container styling */
+        .form-container {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+            max-width: 400px;
+            width: 90vw;
+            height: 80vh;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: #4CAF50 #f5f7fa;
+        }
+
+        /* Custom scrollbar for Webkit browsers */
+        .form-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .form-container::-webkit-scrollbar-track {
+            background: #f5f7fa;
+        }
+
+        .form-container::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #4CAF50, #388E3C);
+            border-radius: 10px;
+        }
+
+        /* Form fields styling */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            font-size: 14px;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #c8e6c9;
+            border-radius: 8px;
+            background-color: #f8f9fa;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: #4CAF50;
+            box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3);
+            outline: none;
+        }
+
+        /* Checkbox styling */
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .checkbox-group label {
+            margin-left: 6px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        input[type="checkbox"] {
+            transform: scale(1.2);
+            cursor: pointer;
+        }
+
+        /* Gradient submit button */
+        button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #4CAF50, #388E3C);
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, #388E3C, #4CAF50);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1>Add Student</h1>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Add Student</button>
+        </form>
+    </div>
+</body>
+</html>
